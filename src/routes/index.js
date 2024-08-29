@@ -6,6 +6,7 @@ const orderRouter = require("./orderItems.routes.js");
 const contractRouter = require("./contract.routes.js");
 const paymentRouter = require("./payments.routes.js");
 const contractTypeRouter = require("./contract_type.routes.js");
+const categoryRouter = require("./category.routes.js");
 
 const routes = Router();
 
@@ -16,6 +17,7 @@ routes
   .use("/orders", orderRouter)
   .use("/contract", contractRouter)
   .use("/payments", paymentRouter)
-  .use("/contract-types", contractTypeRouter);
+  .use("/contract-types", contractTypeRouter)
+  .use("/category", categoryRouter);
 
 module.exports = routes;

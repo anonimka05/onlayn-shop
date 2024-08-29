@@ -1,5 +1,4 @@
-const Category = require("../models/category.model.js");
-const ApiFeature = require("../utils/api-features.utils.js");
+const Category = require("../models//category.models.js");
 
 class CategoryController {
   #_categoryModel;
@@ -17,7 +16,7 @@ class CategoryController {
         query
       )
         .filter()
-        .sort("name") 
+        .sort("name")
         .limitFields()
         .getQuery()
         .countDocuments();
@@ -27,7 +26,7 @@ class CategoryController {
         query
       )
         .filter()
-        .sort("name") 
+        .sort("name")
         .limitFields()
         .paginate()
         .getQuery();
@@ -38,6 +37,38 @@ class CategoryController {
         limit: req.query?.limit || 10,
         results: allResults,
         data: allCategories,
+      });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  };
+
+  getCategoryStats = async (req, res) => {
+    try {
+      const statistics = await this.#_categoryModel.aggregate([
+        {
+          $match: {
+            name: { $regex: /^A/i },
+          },
+        },
+        {
+          $group: {
+            _id: "$category_id",
+            soni: { $sum: 1 },
+            avgNameLength: { $avg: { $strLenCP: "$name" } },
+            uniqueCategories: { $addToSet: "$name" },
+          },
+        },
+        {
+          $sort: {
+            avgNameLength: 1,
+          },
+        },
+      ]);
+
+      res.status(200).send({
+        message: "success",
+        data: statistics,
       });
     } catch (error) {
       res.status(500).send({ message: error.message });
