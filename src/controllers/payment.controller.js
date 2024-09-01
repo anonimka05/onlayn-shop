@@ -82,6 +82,36 @@ class PaymentController {
     }
   };
 
+  getDatelineNearPayments = async (_, res) => {
+    try {
+      const today = new Date();
+      const overduePayments = await Payment.find({
+        payment_date: { $lt: today },
+        amount_paid: { $lt: { $expr: "$contract_id.total_amount" } },
+      }).populate("contract_id");
+
+      const overduePaymentsWithDays = overduePayments.map((payment) => {
+        const overdueDays = Math.ceil(
+          (today - payment.payment_date) / (1000 * 60 * 60 * 24)
+        );
+        return {
+          ...payment._doc,
+          overdueDays,
+        };
+      });
+
+      res.status(200).send({
+        message: "Overdue payments retrieved successfully",
+        data: overduePaymentsWithDays,
+      });
+    } catch (error) {
+      res.status(500).send({
+        message: "Failed to retrieve overdue payments",
+        error: error.message,
+      });
+    }
+  };
+
   updatePayment = async (req, res) => {
     try {
       const payment = await Payment.findByIdAndUpdate(req.params.id, req.body, {
