@@ -82,7 +82,7 @@ class PaymentController {
     }
   };
 
-  getDatelineNearPayments = async (_, res) => {
+  getDeatlineNearPayments = async (_, res) => {
     try {
       const today = new Date();
       const overduePayments = await Payment.find({
