@@ -155,8 +155,8 @@ class PaymentController {
     try {
       const today = new Date();
       const overduePayments = await Payment.find({
-        payment_date: { $lt: today }, // payment_date todaydan kichik
-        amount_paid: { $lt: { $expr: "$contract_id.total_amount" } }, // To'lanmagan yoki qisman to'langan
+        payment_date: { $lt: today }, 
+        amount_paid: { $lt: { $expr: "$contract_id.total_amount" } }, 
       }).populate("contract_id");
 
       res.status(200).send({
