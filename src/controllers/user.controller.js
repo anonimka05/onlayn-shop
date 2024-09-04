@@ -42,13 +42,36 @@ class UserController {
     }
   };
 
+  getUserById = async (req, res) => {
+    try {
+      const user = await this.#_userModel
+        .findById(req.params.id)
+        .populate("products");
+        console.log(req.params.id);
+        
+      if (!user) {
+        return res.status(404).send({ message: "User not found" });
+      }
+      res.status(200).send({
+        message: "User retrieved successfully",
+        data: product_id,
+      });
+    } catch (error) {
+      res.status(500).send({
+        message: "Failed to retrieve user",
+        error: error.message,
+      });
+    }
+  };
+
   createUser = async (req, res) => {
     try {
-      const { firstName, lastName, phone, interests, status, age } = req.body;
+      const { first_name, last_name, phone, interests, status, age } = req.body;
+      console.log(req.body);
 
-      const newUser = await User.create({
-        first_name: firstName,
-        last_name: lastName,
+      const newUser = await this.#_userModel.create({
+        first_name,
+        last_name,
         phone,
         interests,
         status,

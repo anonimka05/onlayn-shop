@@ -1,5 +1,5 @@
-const Product = require("../models/product.model.js")
-const ApiFeature = require("../utils/api-features.utils.js")
+const Product = require("../models/product.model.js");
+const ApiFeature = require("../utils/api-features.utils.js");
 
 class ProductController {
   #_productModel;
@@ -10,6 +10,8 @@ class ProductController {
 
   getAllProducts = async (req, res) => {
     const query = { ...req.query };
+    // console.log(query);
+    
 
     const allResults = await new ApiFeature(this.#_productModel.find(), query)
       .filter()
@@ -24,7 +26,7 @@ class ProductController {
       .limitFields()
       .paginate()
       .getQuery()
-      .populate("user", "_id first_name");
+      .populate("user", "_id user_id");
 
     res.send({
       message: "success",
@@ -70,9 +72,23 @@ class ProductController {
   };
 
   createProduct = async (req, res) => {
-    await this.#_productModel.create(req.body);
-
-    res.status(201).send({ message: "success" });
+    try {
+      const product = await this.#_productModel.create(req.body);
+      console.log(req.body);
+      
+      if (!product) {
+        return res.status(404).send({
+          message: "Product not found",
+        });
+      }
+      res.status(200).send({
+        message: "Product created successfully",
+        data: product,
+      });
+      console.log(req.body);
+    } catch (error) {
+      res.status(201).send({ message: "Product successfully created" });
+    }
   };
 
   updateProduct = async (req, res) => {

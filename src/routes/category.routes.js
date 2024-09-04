@@ -5,6 +5,7 @@ const categoryController = require("../controllers/category.controller.js");
 
 categoryRouter
   .get("/", CategoryController.getAllCategories)
+  .get("/:id", categoryController.getCategoryById)
   .get("/stats", categoryController.getCategoryStats)
   .post("/add", CategoryController.createCategory)
   .put("/udate/:id", CategoryController.updateCategory)

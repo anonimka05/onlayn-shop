@@ -1,4 +1,5 @@
 const Category = require("../models//category.models.js");
+const ApiFeature = require("../utils/api-features.utils.js");
 
 class CategoryController {
   #_categoryModel;
@@ -40,6 +41,26 @@ class CategoryController {
       });
     } catch (error) {
       res.status(500).send({ message: error.message });
+    }
+  };
+
+  getCategoryById = async (req, res) => {
+    try {
+      const user_id = await this.#_categoryModel.findById(req.params._id);
+      console.log(user_id);
+      
+      if (!user_id) {
+        return res.status(404).send({ message: "Category not found" });
+      }
+      res.status(200).send({
+        message: "Category retrieved successfully",
+        data: data,
+      });
+    } catch (error) {
+      res.status(500).send({
+        message: "Category to retrieve user",
+        error: error.message,
+      });
     }
   };
 
